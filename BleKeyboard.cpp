@@ -138,7 +138,7 @@ void BleKeyboard::taskServer(void* pvParameter) {
 
   NimBLESecurity *pSecurity = new BLESecurity();
 
-  pSecurity->setAuthenticationMode(ESP_LE_AUTH_BOND);
+  pSecurity->setAuthenticationMode(ESP_LE_AUTH_REQ_SC_BOND);
 
   bleKeyboardInstance->hid->reportMap((uint8_t*)_hidReportDescriptor, sizeof(_hidReportDescriptor));
   bleKeyboardInstance->hid->startServices();
@@ -148,7 +148,6 @@ void BleKeyboard::taskServer(void* pvParameter) {
   NimBLEAdvertising *pAdvertising = pServer->getAdvertising();
   pAdvertising->setAppearance(HID_KEYBOARD);
   pAdvertising->addServiceUUID(bleKeyboardInstance->hid->hidService()->getUUID());
-  pAdvertising->setScanResponse(true);
   pAdvertising->start();
   bleKeyboardInstance->hid->setBatteryLevel(bleKeyboardInstance->batteryLevel);
 
