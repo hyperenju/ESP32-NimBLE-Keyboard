@@ -107,11 +107,14 @@ public:
   void sendReport(KeyReport* keys);
   void sendReport(MediaKeyReport* keys);
   size_t press(uint8_t k);
+  size_t pressRaw(uint8_t k, uint8_t m = 0);
   size_t press(const MediaKeyReport k);
   size_t release(uint8_t k);
+  size_t releaseRaw(uint8_t k, uint8_t m = 0);
   size_t release(const MediaKeyReport k);
   size_t write(uint8_t c);
   size_t write(const MediaKeyReport c);
+  size_t writeRaw(uint8_t k, uint8_t m = 0);
   size_t write(const uint8_t *buffer, size_t size);
   void releaseAll(void);
   bool isConnected(void);
