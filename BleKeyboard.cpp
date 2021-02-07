@@ -51,10 +51,10 @@ static const uint8_t _hidReportDescriptor[] = {
 	REPORT_COUNT(1), 0x06,	   //   REPORT_COUNT (6) ; 6 bytes (Keys)
 	REPORT_SIZE(1), 0x08,	   //   REPORT_SIZE(8)
 	LOGICAL_MINIMUM(1), 0x00,  //   LOGICAL_MINIMUM(0)
-	LOGICAL_MAXIMUM(1), 0x65,  //   LOGICAL_MAXIMUM(0x65) ; 101 keys
+	LOGICAL_MAXIMUM(1), 0x8c,  //   LOGICAL_MAXIMUM(0x8c) ; (Keyboard International6)
 	USAGE_PAGE(1), 0x07,	   //   USAGE_PAGE (Kbrd/Keypad)
 	USAGE_MINIMUM(1), 0x00,	   //   USAGE_MINIMUM (0)
-	USAGE_MAXIMUM(1), 0x65,	   //   USAGE_MAXIMUM (0x65)
+	USAGE_MAXIMUM(1), 0x8c,	   //   USAGE_MAXIMUM (0x8c); (Keyboard International6)
 	HIDINPUT(1), 0x00,		   //   INPUT (Data,Array,Abs,No Wrap,Linear,Preferred State,No Null Position)
 	END_COLLECTION(0),		   // END_COLLECTION
 	// ------------------------------------------------- Media Keys
@@ -313,137 +313,140 @@ const uint8_t _asciimap[128] =
 };
 
 // ASCIIコードをJIS配列の HID USAGE ID に変換
-const uint8_t _Jasciimap[128] =
+// \| \_ は 0x80より大きいため，SHIFT同時押し判定されてしまう．
+//  0x87(\_) ->  0x72(F23), 0x89(\|) -> 0x73(F24)と仮に割り充てる
+// k = 0に\|の\を割り当てる．
+const uint8_t _jasciimap[128] =
 	{
-		0x00, // NUL
+		0x73, //
 		0x00, // SOH
 		0x00, // STX
 		0x00, // ETX
 		0x00, // EOT
-		0x00, // ENQ
+		0x00, // ENQ5
 		0x00, // ACK
 		0x00, // BEL
 		0x2a, // BS	Backspace
-		0x2b, // TAB	Tab
-		0x28, // LF	Enter
+		0x2b, // TAB Tab
+		0x28, // LF	Enter 10
 		0x00, // VT
 		0x00, // FF
 		0x00, // CR
 		0x00, // SO
-		0x00, // SI
+		0x00, // SI 15
 		0x00, // DEL
 		0x00, // DC1
 		0x00, // DC2
 		0x00, // DC3
-		0x00, // DC4
+		0x00, // DC4 20
 		0x00, // NAK
 		0x00, // SYN
 		0x00, // ETB
 		0x00, // CAN
-		0x00, // EM
+		0x00, // EM 25
 		0x00, // SUB
 		0x00, // ESC
 		0x00, // FS
 		0x00, // GS
-		0x00, // RS
+		0x00, // RS 30
 		0x00, // US
 
 		0x2c,		  //  ' ' (スペース)
 		0x1e | SHIFT, // !
 		0x1f | SHIFT, // "
-		0x20 | SHIFT, // #
+		0x20 | SHIFT, // # 35
 		0x21 | SHIFT, // $
 		0x22 | SHIFT, // %
 		0x24 | SHIFT, // &
 		0x24 | SHIFT, // '
-		0x25 | SHIFT, // (
+		0x25 | SHIFT, // ( 40
 		0x26 | SHIFT, // )
 		0x34 | SHIFT, // *
 		0x33 | SHIFT, // +
 		0x36,		  // ,
-		0x2d,		  // -
+		0x2d,		  // - 45
 		0x37,		  // .
 		0x38,		  // /
 		0x27,		  // 0
 		0x1e,		  // 1
-		0x1f,		  // 2
+		0x1f,		  // 2 50
 		0x20,		  // 3
 		0x21,		  // 4
 		0x22,		  // 5
 		0x23,		  // 6
-		0x24,		  // 7
+		0x24,		  // 7 55
 		0x25,		  // 8
 		0x26,		  // 9
-		0x34, 		  // :
+		0x34,		  // :
 		0x33,		  // ;
-		0x36 | SHIFT, // <
-		0x2d | SHIFT,		  // =
+		0x36 | SHIFT, // < 60
+		0x2d | SHIFT, // =
 		0x37 | SHIFT, // >
 		0x38 | SHIFT, // ?
-		0x2f, 		  // @
-		0x04 | SHIFT, // A
+		0x2f,		  // @
+		0x04 | SHIFT, // A 65
 		0x05 | SHIFT, // B
 		0x06 | SHIFT, // C
 		0x07 | SHIFT, // D
 		0x08 | SHIFT, // E
-		0x09 | SHIFT, // F
+		0x09 | SHIFT, // F 70
 		0x0a | SHIFT, // G
 		0x0b | SHIFT, // H
 		0x0c | SHIFT, // I
 		0x0d | SHIFT, // J
-		0x0e | SHIFT, // K
+		0x0e | SHIFT, // K 75
 		0x0f | SHIFT, // L
 		0x10 | SHIFT, // M
 		0x11 | SHIFT, // N
 		0x12 | SHIFT, // O
-		0x13 | SHIFT, // P
+		0x13 | SHIFT, // P 80
 		0x14 | SHIFT, // Q
 		0x15 | SHIFT, // R
 		0x16 | SHIFT, // S
 		0x17 | SHIFT, // T
-		0x18 | SHIFT, // U
+		0x18 | SHIFT, // U 85
 		0x19 | SHIFT, // V
 		0x1a | SHIFT, // W
 		0x1b | SHIFT, // X
 		0x1c | SHIFT, // Y
-		0x1d | SHIFT, // Z
+		0x1d | SHIFT, // Z 90
 		0x30,		  // [
-		0x87,		  // bslash
+		0x72,		  // bslash
 		0x32,		  // ]
-		0x2e, 	      // ^
-		0x87 | SHIFT, // _
+		0x2e,		  // ^
+		0x72 | SHIFT, // _ 95
 		0x2f | SHIFT, // `
 		0x04,		  // a
 		0x05,		  // b
 		0x06,		  // c
-		0x07,		  // d
+		0x07,		  // d 100
 		0x08,		  // e
 		0x09,		  // f
 		0x0a,		  // g
 		0x0b,		  // h
-		0x0c,		  // i
+		0x0c,		  // i 105
 		0x0d,		  // j
 		0x0e,		  // k
 		0x0f,		  // l
 		0x10,		  // m
-		0x11,		  // n
+		0x11,		  // n 110
 		0x12,		  // o
 		0x13,		  // p
 		0x14,		  // q
 		0x15,		  // r
-		0x16,		  // s
+		0x16,		  // s 115
 		0x17,		  // t
 		0x18,		  // u
 		0x19,		  // v
 		0x1a,		  // w
-		0x1b,		  // x
+		0x1b,		  // x 120
 		0x1c,		  // y
 		0x1d,		  // z
 		0x30 | SHIFT, // {
-		0x89 | SHIFT, // |
-		0x32 | SHIFT, // }
+		0x73 | SHIFT, // |
+		0x32 | SHIFT, // } 125
 		0x2e | SHIFT, // ~
-		0			  // DEL 不使用？
+		0			  // DEL 127
 };
 
 uint8_t USBPutChar(uint8_t c);
@@ -508,7 +511,25 @@ size_t BleKeyboard::press(uint8_t k)
 size_t BleKeyboard::jpress(uint8_t k)
 {
 	uint8_t i;
-	if (k >= 136)
+	if (k >= 252)
+	{
+		switch (k)
+		{
+		case 0xFC:
+			k = 0x35;
+			break;
+		case 0xFD:
+			k = 0x8B;
+			break;
+		case 0xFE:
+			k = 0x8A;
+			break;
+		case 0xFF:
+			k = 0x88;
+			break;
+		}
+	}
+	else if (k >= 136)
 	{ // it's a non-printing key (not a modifier)
 		k = k - 136;
 	}
@@ -518,8 +539,8 @@ size_t BleKeyboard::jpress(uint8_t k)
 		k = 0;
 	}
 	else
-	{ // it's a printing key
-		k = pgm_read_byte(_jasciimap + k);
+	{									   // it's a printing key
+		k = pgm_read_byte(_jasciimap + k); //
 		if (!k)
 		{
 			setWriteError();
@@ -530,6 +551,16 @@ size_t BleKeyboard::jpress(uint8_t k)
 			_keyReport.modifiers |= 0x02; // the left shift modifier
 			k &= 0x7F;
 		}
+		// ダミーを正しいHID Usageに差し替える
+		switch (k)
+		{
+		case 0x72:
+			k = 0x87;
+			break;
+		case 0x73:
+			k = 0x89;
+			break;
+		}
 	}
 
 	// Add k to the key report only if it's not already present
@@ -553,35 +584,6 @@ size_t BleKeyboard::jpress(uint8_t k)
 			return 0;
 		}
 	}
-	sendReport(&_keyReport);
-	return 1;
-}
-
-size_t BleKeyboard::pressRaw(uint8_t k, uint8_t m)
-{
-	uint8_t i;
-	// Add k to the key report only if it's not already present
-	// and if there is an empty slot.
-	if (_keyReport.keys[0] != k && _keyReport.keys[1] != k &&
-		_keyReport.keys[2] != k && _keyReport.keys[3] != k &&
-		_keyReport.keys[4] != k && _keyReport.keys[5] != k)
-	{
-
-		for (i = 0; i < 6; i++)
-		{
-			if (_keyReport.keys[i] == 0x00)
-			{
-				_keyReport.keys[i] = k;
-				break;
-			}
-		}
-		if (i == 6)
-		{
-			setWriteError();
-			return 0;
-		}
-	}
-	_keyReport.modifiers |= m;
 	sendReport(&_keyReport);
 	return 1;
 }
@@ -683,24 +685,6 @@ size_t BleKeyboard::jrelease(uint8_t k)
 	return 1;
 }
 
-size_t BleKeyboard::releaseRaw(uint8_t k, uint8_t m)
-{
-	uint8_t i;
-	// Test the key report to see if k is present.  Clear it if it exists.
-	// Check all positions in case the key is present more than once (which it shouldn't be)
-	for (i = 0; i < 6; i++)
-	{
-		if (0 != k && _keyReport.keys[i] == k)
-		{
-			_keyReport.keys[i] = 0x00;
-		}
-	}
-
-	_keyReport.modifiers &= ~m;
-	sendReport(&_keyReport);
-	return 1;
-}
-
 size_t BleKeyboard::release(const MediaKeyReport k)
 {
 	uint16_t k_16 = k[1] | (k[0] << 8);
@@ -733,13 +717,6 @@ size_t BleKeyboard::write(uint8_t c)
 	vTaskDelay(3);
 	release(c); // Keyup
 	return p;	// just return the result of press() since release() almost always returns 1
-}
-
-size_t BleKeyboard::writeRaw(uint8_t c, uint8_t m)
-{  
-  uint8_t p = pressRaw(c, m);  // Keydown
-  releaseRaw(c, m);            // Keyup
-  return p;              // just return the result of press() since release() almost always returns 1
 }
 
 size_t BleKeyboard::write(const MediaKeyReport c)
