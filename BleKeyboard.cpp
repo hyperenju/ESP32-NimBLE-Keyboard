@@ -348,7 +348,7 @@ const uint8_t _Jasciimap[128] =
 		0x00, // RS
 		0x00, // US
 
-		0x2c,		  //  ' ' 不使用？
+		0x2c,		  //  ' ' (スペース)
 		0x1e | SHIFT, // !
 		0x1f | SHIFT, // "
 		0x20 | SHIFT, // #
