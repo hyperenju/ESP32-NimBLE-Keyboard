@@ -11,6 +11,9 @@
 #include "NimBLECharacteristic.h"
 #include "Print.h"
 
+// '\\' だと見分けがつかないため明示
+const uint8_t KEY_YEN = 0;
+const uint8_t KEY_BACKSLACK = 92;
 
 const uint8_t KEY_LEFT_CTRL = 0x80;
 const uint8_t KEY_LEFT_SHIFT = 0x81;
@@ -36,6 +39,7 @@ const uint8_t KEY_PAGE_DOWN = 0xD6;
 const uint8_t KEY_HOME = 0xD2;
 const uint8_t KEY_END = 0xD5;
 const uint8_t KEY_CAPS_LOCK = 0xC1;
+const uint8_t KEY_PRINT_SCREEN = 0xCE;
 const uint8_t KEY_F1 = 0xC2;
 const uint8_t KEY_F2 = 0xC3;
 const uint8_t KEY_F3 = 0xC4;
@@ -60,6 +64,12 @@ const uint8_t KEY_F21 = 0xF8;
 const uint8_t KEY_F22 = 0xF9;
 const uint8_t KEY_F23 = 0xFA;
 const uint8_t KEY_F24 = 0xFB;
+// Japanese unique key
+// 136足すルールだとuint8_tに収まらないためハードコードしています．
+const uint8_t KEY_HANKAKU_ZENKAKU = 0xFC;
+const uint8_t KEY_MUHENKAN = 0xFD;
+const uint8_t KEY_HENKAN = 0xFE;
+const uint8_t KEY_HIRA_KANA = 0xFF;
 
 typedef uint8_t MediaKeyReport[2];
 
@@ -108,15 +118,12 @@ public:
   void sendReport(MediaKeyReport* keys);
   size_t press(uint8_t k);
   size_t jpress(uint8_t k);
-  size_t pressRaw(uint8_t k, uint8_t m = 0);
   size_t press(const MediaKeyReport k);
   size_t release(uint8_t k);
   size_t jrelease(uint8_t k);
-  size_t releaseRaw(uint8_t k, uint8_t m = 0);
   size_t release(const MediaKeyReport k);
   size_t write(uint8_t c);
   size_t write(const MediaKeyReport c);
-  size_t writeRaw(uint8_t k, uint8_t m = 0);
   size_t write(const uint8_t *buffer, size_t size);
   void releaseAll(void);
   bool isConnected(void);
